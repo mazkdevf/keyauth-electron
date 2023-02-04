@@ -1,0 +1,207 @@
+<html lang="en">
+
+<head>
+    <title>KeyAuth HTML Example - FOR ANDREJCHE</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="https://cdn.keyauth.win/assets/img/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" />
+
+    <link href="https://cdn.keyauth.cc/v2/assets/plugins/global/plugins.bundle.css" rel="stylesheet" type="text/css">
+    <link href="https://cdn.keyauth.cc/v2/assets/css/style.bundle.css" rel="stylesheet" type="text/css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+
+<body class="bg-dark" style="overflow: hidden;">
+    <div class="d-flex flex-column flex-root">
+        <div
+            class="d-flex flex-column flex-column-fluid bgi-position-y-bottom position-x-center bgi-no-repeat bgi-size-contain bgi-attachment-fixed">
+            <div class="d-flex flex-center flex-column flex-column-fluid p-10 pb-lg-20">
+                <div class="w-lg-500px bg-body rounded shadow-sm p-10 p-lg-15 mx-auto">
+                    <form class="form w-100" id="formi">
+                        <div class="text-center mb-10">
+                            <h1 class="text-light mb-3">Andrejche Order</h1>
+                        </div>
+
+                        <noscript>
+                            <div class="alert bg-danger font-monospace" role="alert">
+                                <div class="mb-3 text-white">NO JS Enabled.</div>
+                            </div>
+                        </noscript>
+
+                        <div id="ip" style="display: hidden;"></div>
+
+                        <script>
+                            var UserInfo = sessionStorage.getItem("userData");
+                            if (UserInfo) {
+                                UserInfo = JSON.parse(UserInfo);
+                                document.write(`
+                                <center><label class="form-label fs-6 fw-bolder text-light">Welcome to Dashboard!</label></center><br>
+                                <label class="form-label fs-6 fw-bolder text-light">Username: ${UserInfo?.username ?? 'Unknown'}</label><br>
+                                <label class="form-label fs-6 fw-bolder text-light">IP address: ${UserInfo?.ip}</label><br>
+                                <label class="form-label fs-6 fw-bolder text-light">Hardware-Id: ${UserInfo?.hwid ?? "Doens't Exist."}</label><br>
+                                <label class="form-label fs-6 fw-bolder text-light">Created At: ${moment.unix(UserInfo?.createdate).format("DD-MM-YYYY - HH:mm:ss")}</label><br>
+                                <label class="form-label fs-6 fw-bolder text-light">Last Login: ${moment.unix(UserInfo?.lastlogin).format("DD-MM-YYYY - HH:mm:ss")}</label><br>`);
+
+                                for (var i = 0; i < UserInfo?.subscriptions?.length; i++) {
+                                    var sub = UserInfo?.subscriptions[i]?.subscription;
+                                    document.write(`
+                                    <label class="form-label fs-6 fw-bolder text-light">#${i} Subscription: ${sub}, Expiry: ${moment.unix(UserInfo?.subscriptions[i]?.expiry).format("DD-MM-YYYY - HH:mm:ss")}</label><br>`);
+                                }
+
+                                document.write(`<br>
+                                <button id="Logout" class="btn btn-lg btn-primary w-100 mb-5">
+                                    <span class="indicator-label">Logout</span>
+                                </button>`);
+                            } else {
+                                document.write(`
+                                <div class="fv-row mb-10">
+                                <!-- username -->
+                                <label class="form-label fs-6 fw-bolder text-light">Username</label>
+                                <input class="form-control form-control-lg form-control-solid" type="text" id="username"
+                                    autocomplete="on" />
+                                <div class="form-group row">
+                                    </br>
+                                </div>
+                                <!-- password -->
+                                <div class="fv-row mb-4">
+                                    <div class="d-flex flex-stack mb-2">
+                                        <label class="form-label fw-bolder text-light fs-6 mb-0">Password</label>
+                                    </div>
+                                    <input class="form-control form-control-lg form-control-solid" type="password"
+                                        id="password" autocomplete="on" />
+                                </div>
+                                <!-- License -->
+                                <div class="fv-row mb-6">
+                                    <div class="d-flex flex-stack mb-2">
+                                        <label class="form-label fw-bolder text-light fs-6 mb-0">License</label>
+                                    </div>
+                                    <input class="form-control form-control-lg form-control-solid" type="text" id="key"
+                                        autocomplete="on" />
+                                </div>
+                                <div class="text-center">
+                                    <button name="login" id="login" class="btn btn-lg btn-primary w-100 mb-5">
+                                        <span class="indicator-label">Login</span>
+                                    </button>
+                                    <button name="register" id="register" class="btn btn-lg btn-primary w-100 mb-5">
+                                        <span class="indicator-label">Register</span>
+                                    </button>
+                                    <button name="upgrade" id="upgrade" class="btn btn-lg btn-primary w-100 mb-5">
+                                        <span class="indicator-label">Upgrade</span>
+                                    </button>
+                                    <button name="license" id="license" class="btn btn-lg btn-primary w-100 mb-5">
+                                        <span class="indicator-label">License</span>
+                                    </button>
+                                </div>
+                            </div>
+                                `)
+                            }
+
+
+                        </script>
+                    </form>
+                </div>
+                <div class="d-flex flex-center flex-column-auto p-10" id="appInfo"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script src="./renderer.js"></script>
+    <script src="./KeyAuth.js"></script>
+
+    <script type='text/javascript'>
+
+        const KeyAuthApp = new KeyAuth(
+            "", // Application Name
+            "", // OwnerID
+            "", // Application Secret
+            "1.0" // Application Version
+        );
+
+        $(document).ready(async function () {
+            var UserInfo = sessionStorage.getItem("userData");
+            if (!UserInfo) {
+                document.querySelector('#appInfo').innerHTML = `
+                <div class="d-flex align-items-center fw-bold fs-6">
+                    <a class="text-muted text-hover-primary px-2">Online Users: <i id="oU" class="countup"></i></a>
+                    <a class="text-muted text-hover-primary px-2">Total Keys: <i id="tK" class="countup"></i></a>
+                    <a class="text-muted text-hover-primary px-2">Total Users: <i id="tU" class="countup"></i></a>
+                </div>`;
+                await KeyAuthApp.Initialize();
+
+                document.querySelector("#oU").innerHTML = KeyAuthApp.app_data.numOnlineUsers;
+                document.querySelector("#tK").innerHTML = KeyAuthApp.app_data.numKeys;
+                document.querySelector("#tU").innerHTML = KeyAuthApp.app_data.numUsers;
+                await KeyAuthApp.CountUp();
+            }
+        });
+
+        $(function () {
+            $("#formi").submit(function (e) {
+                e.preventDefault();
+            });
+            
+            $("#Logout").click(async function (e) {
+                e.preventDefault();
+                sessionStorage.removeItem("userData");
+                window.location.reload();
+            });
+
+            $('#login').click(async function (e) {
+                e.preventDefault();
+
+                var username = $('#username').val();
+                var password = $('#password').val();
+
+                if ((await KeyAuthApp.Login(username, password))) {
+                    KeyAuthApp.success("Successfully Logged in!, please refresh page.");
+                    window.location.reload();
+                }
+            });
+
+            $('#register').click(async function (e) {
+                e.preventDefault();
+
+                var username = $('#username').val();
+                var password = $('#password').val();
+                var key = $('#key').val();
+
+                if ((await KeyAuthApp.Register(username, password, key))) {
+                    KeyAuthApp.success("Successfully registered, please refresh page.");
+                    window.location.reload();
+                }
+            });
+
+            $('#upgrade').click(async function (e) {
+                e.preventDefault();
+
+                var username = $('#username').val();
+                var key = $('#key').val();
+
+                if ((await KeyAuthApp.Upgrade(username, key))) {
+                    KeyAuthApp.success("Successfully Upgraded!");
+                    window.location.reload();
+                }
+            });
+
+            $('#license').click(async function (e) {
+                e.preventDefault();
+                var key = $('#key').val();
+
+                if ((await KeyAuthApp.License(key))) {
+                    KeyAuthApp.success("License is valid");
+                    window.location.reload();
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>
